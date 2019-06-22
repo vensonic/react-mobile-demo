@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import React, { Component,Fragment } from 'react';
+import Mylayout from "./components/Mylayout";
+import Home from "./pages/Home";
+import Cart from "./pages/Cart";
+import Mine from "./pages/Mine";
+//引入路由
+import { HashRouter as Router,Route} from 'react-router-dom';
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {  }
+  }
+  render() { 
+    return (
+      <Fragment>
+        <Router>
+          <Route path='/' exact render={(props)=><Mylayout {...props}><Home/></Mylayout>}/>
+          <Route path='/Cart' exact render={(props)=><Mylayout {...props}><Cart/></Mylayout>}/>
+          <Route path='/Mine' exact render={(props)=><Mylayout {...props}><Mine/></Mylayout>}/>
+        </Router>
+      </Fragment>
+    );
+  }
 }
-
+ 
 export default App;
+
