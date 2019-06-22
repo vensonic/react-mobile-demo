@@ -1,6 +1,7 @@
-import React, { Component,Fragment } from 'react'
-import { getGoods } from "../api";
-import { Carousel } from "antd-mobile";
+import React, { Component, Fragment } from "react";
+import { getGoods, getGoodsGroup } from "../api";
+import { Carousel, List, Grid } from "antd-mobile";
+const Item = List.Item;
 //轮播图组件
 class Slider extends Component {
   state = {
@@ -39,34 +40,149 @@ class Slider extends Component {
 }
 
 class Home extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-          sliderlist: [],
-          imgHeight: 176,
-          silderRun:false
-        };
-    }
-    componentDidMount(){
-        getGoods().then(res=>{
-            // console.log(res.message.sliderlist);
-            if(res.status === 0){
-                this.setState({
-                  sliderlist: res.message.sliderlist,
-                  silderRun:true
-                });
-            }
-        })
-    }
-    render() { 
-        return (
-          <div className="home">
-              {/* 轮播图开始 */}
-              {this.state.sliderlist.length ? <Slider sliderlist={this.state.sliderlist}/> : null}
-              {/* 轮播图结束 */}
-          </div>
-        );
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      sliderlist: [],
+      imgHeight: 176,
+      toplist: [],
+      catelist: []
+    };
+  }
+  componentDidMount() {
+    //获取商品
+    getGoods().then(res => {
+      // console.log(res.message);
+      if (res.status === 0) {
+        this.setState({
+          sliderlist: res.message.sliderlist,
+          toplist: res.message.toplist
+        });
+      }
+    });
+    //获取商品分类目录
+    getGoodsGroup().then(res => {
+    //   console.log(res);
+      if (res.status === 0) {
+        this.setState({ catelist: res.message });
+      }
+    });
+  }
+  goodsInfo = (el, index) => {
+    console.log(el, index);
+  };
+  render() {
+    return (
+      <div className="home">
+        {/* 轮播图开始 */}
+        {this.state.sliderlist.length ? (
+          <Slider sliderlist={this.state.sliderlist} />
+        ) : null}
+        {/* 轮播图结束 */}
+        {/* 推荐商品列表开始 */}
+        <div className="recommond">
+          <List renderHeader={() => "推荐商品"}>
+            {this.state.toplist.map(val => (
+              <Item
+                key={val.id}
+                thumb={val.img_url}
+                onClick={() => {
+                  console.log(val.id);
+                }}
+              >
+                {val.title}
+              </Item>
+            ))}
+          </List>
+        </div>
+        {/* 推荐商品列表结束 */}
+        {/* 商品分类目录开始 */}
+        <div className="Cate">
+          {this.state.catelist.map((val, index) => {
+            return (
+              <Fragment key={index}>
+                <div className="sub-title">{val.catetitle}</div>
+                <Grid
+                  data={val.datas.map(val2 => ({
+                    icon: val2.img_url,
+                    title: val2.artTitle,
+                    sellPrice: val2.sell_price,
+                    marketPrice: val2.market_price,
+                    hotsell: val2.stock_quantity
+                  }))}
+                  itemStyle={{
+                    height: "275px"
+                  }}
+                  columnNum={2}
+                  onClick={this.goodsInfo}
+                  renderItem={dataItem => (
+                    <div style={{ padding: "12.5px" }}>
+                      <img
+                        src={dataItem.icon}
+                        style={{
+                          width: "80%"
+                        }}
+                        alt=""
+                      />
+                      <div
+                        style={{
+                          color: "#333",
+                          fontSize: "14px",
+                          marginTop: "12px",
+                          textAlign: "left"
+                        }}
+                      >
+                        <div className="goodsTitle">{dataItem.title}</div>
+                        <div className="goodsPrice">
+                          <span className="currentPrice">
+                            {dataItem.sellPrice}
+                          </span>
+                          <span className="oldPrice">
+                            {dataItem.marketPrice}
+                          </span>
+                        </div>
+                        <div className="hotsell">热卖中{dataItem.hotsell}</div>
+                      </div>
+                    </div>
+                  )}
+                />
+                <style jsx>
+                  {`
+                    .sub-title {
+                      color: #888;
+                      font-size: 14px;
+                      padding: 15px 0 9px 15px;
+                    }
+                    .goodsTitle {
+                      height: 32px;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                      display: -webkit-box;
+                      -webkit-box-orient: vertical;
+                      -webkit-line-clamp: 2;
+                    }
+                    .goodsPrice {
+                      margin: 10px 0;
+                      .currentPrice {
+                        color: red;
+                      }
+                      .oldPrice {
+                        float: right;
+                        text-decoration: line-through;
+                      }
+                    }
+                    .hotsell {
+                    }
+                  `}
+                </style>
+              </Fragment>
+            );
+          })}
+        </div>
+        {/* 商品分类目录结束 */}
+      </div>
+    );
+  }
 }
- 
+
 export default Home;
