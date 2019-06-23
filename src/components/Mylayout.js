@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from "react";
 //引入ant-d
 import { TabBar } from "antd-mobile";
+import { connect } from "react-redux";
+
 class Mylayout extends Component {
   constructor(props) {
     super(props);
@@ -51,7 +53,7 @@ class Mylayout extends Component {
               }}
               data-seed="logId"
             >
-              {this.props.match.path === "/" ? this.props.children :null}
+              {this.props.match.path === "/" ? this.props.children : null}
             </TabBar.Item>
             <TabBar.Item
               icon={
@@ -74,14 +76,16 @@ class Mylayout extends Component {
               }
               title="购物车"
               key="Cart"
-              badge={1}
+              badge={this.props.cartListLength}
               selected={this.props.match.path === "/Cart"}
               onPress={() => {
                 this.props.history.push("/Cart");
               }}
               data-seed="logId1"
             >
-              {this.props.match.path === "/Cart" ? this.props.children :null}
+              {this.props.match.path === "/Cart"
+                ? this.props.children
+                : null}
             </TabBar.Item>
             <TabBar.Item
               icon={
@@ -109,7 +113,9 @@ class Mylayout extends Component {
                 this.props.history.push("/Mine");
               }}
             >
-              {this.props.match.path === "/Mine" ? this.props.children : null}
+              {this.props.match.path === "/Mine"
+                ? this.props.children
+                : null}
             </TabBar.Item>
           </TabBar>
         </div>
@@ -117,5 +123,10 @@ class Mylayout extends Component {
     );
   }
 }
-
-export default Mylayout;
+//映射state
+const mapStateToProp =(state)=>{
+  return {
+    cartListLength: state.CartReducer.cartList.length
+  }
+}
+export default connect(mapStateToProp,null)(Mylayout) ;

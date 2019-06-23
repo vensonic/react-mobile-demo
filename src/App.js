@@ -3,6 +3,7 @@ import Mylayout from "./components/Mylayout";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import Mine from "./pages/Mine";
+import GoodsDetail from "./pages/GoodsDetail";
 //引入路由
 import { HashRouter as Router,Route} from 'react-router-dom';
 class App extends Component {
@@ -17,6 +18,7 @@ class App extends Component {
           <Route path='/' exact render={(props)=><Mylayout {...props}><Home/></Mylayout>}/>
           <Route path='/Cart' exact render={(props)=><Mylayout {...props}><Cart/></Mylayout>}/>
           <Route path='/Mine' exact render={(props)=><Mylayout {...props}><Mine/></Mylayout>}/>
+         <Route path='/goodsDetail/:id' component={GoodsDetail}/>
         </Router>
       </Fragment>
     );

@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from "react";
 import { getGoods, getGoodsGroup } from "../api";
 import { Carousel, List, Grid } from "antd-mobile";
+//引入withrouter,解决没哟传入props问题
+import { withRouter } from 'react-router-dom';
 const Item = List.Item;
 //轮播图组件
 class Slider extends Component {
@@ -15,6 +17,7 @@ class Slider extends Component {
             <a
               key={val.id}
               href="javascrip:;"
+              onClick={()=>this.props.history.push(`/goodsDetail/${val.id}`)}
               style={{
                 display: "inline-block",
                 width: "100%",
@@ -68,15 +71,18 @@ class Home extends Component {
       }
     });
   }
-  goodsInfo = (el, index) => {
-    console.log(el, index);
+  //点击宫格的回调函数
+  goodsInfo = (el) => {
+    // console.log(el, index);
+    this.props.history.push(`/goodsDetail/${el.id}`)
   };
   render() {
+    
     return (
       <div className="home">
         {/* 轮播图开始 */}
         {this.state.sliderlist.length ? (
-          <Slider sliderlist={this.state.sliderlist} />
+          <Slider sliderlist={this.state.sliderlist} {...this.props} />
         ) : null}
         {/* 轮播图结束 */}
         {/* 推荐商品列表开始 */}
@@ -86,9 +92,9 @@ class Home extends Component {
               <Item
                 key={val.id}
                 thumb={val.img_url}
-                onClick={() => {
-                  console.log(val.id);
-                }}
+                onClick={() =>
+                  this.props.history.push(`/goodsDetail/${val.id}`)
+                }
               >
                 {val.title}
               </Item>
@@ -104,6 +110,7 @@ class Home extends Component {
                 <div className="sub-title">{val.catetitle}</div>
                 <Grid
                   data={val.datas.map(val2 => ({
+                    id: val2.artID,
                     icon: val2.img_url,
                     title: val2.artTitle,
                     sellPrice: val2.sell_price,
@@ -141,7 +148,9 @@ class Home extends Component {
                             {dataItem.marketPrice}
                           </span>
                         </div>
-                        <div className="hotsell">热卖中{dataItem.hotsell}</div>
+                        <div className="hotsell">
+                          热卖中{dataItem.hotsell}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -185,4 +194,4 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default withRouter(Home);
