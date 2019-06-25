@@ -53,7 +53,7 @@ class GoodsDetail extends Component {
   }
   componentDidMount() {
     getGoodsInfoById(this.props.match.params.id).then(res => {
-      console.log(res);
+      // console.log(res);
       if (res.status === 0) {
         this.setState({
           goodsInfo: res.message.goodsinfo,
@@ -113,7 +113,10 @@ class GoodsDetail extends Component {
               <span className="iconfont icon-kefu" />
               <span>客服</span>
             </div>
-            <div className="goodsCart">
+            <div
+              className="goodsCart"
+              onClick={() => this.props.history.push("/Cart")}
+            >
               <Badge
                 text={this.props.cartListLength}
                 style={{ background: "red" }}
@@ -122,7 +125,10 @@ class GoodsDetail extends Component {
               </Badge>
               <span>购物车</span>
             </div>
-            <div className="addCart" onClick={() => this.props.add_to_cart(this.state.goodsInfo)}>
+            <div
+              className="addCart"
+              onClick={() => this.props.add_to_cart(this.state.goodsInfo)}
+            >
               加入购物车
             </div>
             <div className="purchase">立即购买</div>
@@ -223,19 +229,21 @@ class GoodsDetail extends Component {
   }
 }
 //设置state和props的映射
-const mapStateToProp =(state)=>{
+const mapStateToProp = state => {
   return {
     cartListLength: state.CartReducer.cartList.length
-  }
- 
-}
- //设置dispatch映射
-  const mapDispatch = (dispatch)=>{
-    return {
-      add_to_cart:(goodsinfo)=>{
-        dispatch(addToCart(goodsinfo));
-      }
+  };
+};
+//设置dispatch映射
+const mapDispatch = dispatch => {
+  return {
+    add_to_cart: goodsinfo => {
+      dispatch(addToCart(goodsinfo));
     }
-  }
-  
-export default connect(mapStateToProp,mapDispatch)(GoodsDetail);
+  };
+};
+
+export default connect(
+  mapStateToProp,
+  mapDispatch
+)(GoodsDetail);
